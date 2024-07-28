@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/authRoutes";
-import reminderRouter from "./routes/reminders";
+import reminderRouter from "./routes/reminderRoutes";
 
 dotenv.config();
 

@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "./User";
 import { Tag } from "./Tag";
+import { Link } from "./Link";
 
 @Entity()
 export class Reminder
@@ -9,16 +10,10 @@ export class Reminder
     id: number;
 
     @Column()
-    userId: number;
-
-    @Column()
     title: string;
 
-    @Column()
+    @Column({ nullable: true })
     description: string;
-
-    @Column("simple-array")
-    links: string[];
 
     @Column({ type: "timestamp" })
     dueDate: Date;
@@ -32,6 +27,9 @@ export class Reminder
 
     @ManyToOne(()=> User, user=> user.reminders)
     user: User;
+
+    @OneToMany(()=> Link, link=> link.reminder)
+    links: Link[];
 
     @ManyToMany(()=> Tag, tag=> tag.reminders)
     tags: Tag[];
