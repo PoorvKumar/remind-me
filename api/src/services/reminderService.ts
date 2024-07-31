@@ -32,9 +32,9 @@ export class ReminderService extends WorkerService {
     });
   }
 
-  async getReminder(id: number): Promise<Reminder> {
+  async getReminder(id: number, user: User): Promise<Reminder> {
     return await this.reminderRepository.findOneOrFail({
-      where: { id },
+      where: { id, user: { id: user.id } },
       relations: ["links","tags"]
     });
   }
@@ -114,6 +114,8 @@ export class ReminderService extends WorkerService {
         if(status) reminder.status=status;
         if(recurrence) reminder.recurrence=recurrence;
 
+        console.log("Updated reminder w/o links and tags:",reminder);
+
         if (links) {
           await transactionalEntityManager.remove(reminder.links);
           const newLinks = links.map((link) =>
@@ -142,6 +144,8 @@ export class ReminderService extends WorkerService {
 
           reminder.tags=tagEntities;
         }
+
+        console.log("Updated reminder with links and tags:",reminder);
 
         await transactionalEntityManager.save(reminder);
         await reminderQueue.remove(`reminder-${reminder.id}`);

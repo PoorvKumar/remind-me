@@ -55,7 +55,7 @@ export class ReminderController
     {
         try
         {
-            const reminder=await this.reminderService.getReminder(parseInt(req.params.id));
+            const reminder=await this.reminderService.getReminder(parseInt(req.params.id),req.user);
             res.status(200).json(reminder);
         }
         catch(err)
