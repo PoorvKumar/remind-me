@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "./User";
 import { Tag } from "./Tag";
 import { Link } from "./Link";
@@ -32,6 +32,7 @@ export class Reminder
     links: Link[];
 
     @ManyToMany(()=> Tag, tag=> tag.reminders)
+    @JoinTable()
     tags: Tag[];
 
     @Column({ nullable: true })

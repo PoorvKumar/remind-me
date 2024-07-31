@@ -34,7 +34,11 @@ export async function setupWorkers(
     });
 
     workers.push(worker);
+    // console.log(`Worker ${name} initialized`);
   });
+
+  console.log(`Workers setup successfully!`);
+  
 }
 
 export function getAllWorkers(): Worker[]

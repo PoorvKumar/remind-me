@@ -22,6 +22,7 @@ app.get('/',(req: Request, res: Response, next: NextFunction)=>
 });
 
 app.use('/api/auth',authRouter);
+app.use('/api/reminder',reminderRouter);
 
 app.use((err: Error,req: Request,res: Response,next: NextFunction)=>
 {
