@@ -16,7 +16,7 @@ export class ReminderController
         try
         {
             const reminder=await this.reminderService.createReminder(req.body,req.user);
-            res.status(201).json(reminder);
+            res.status(201).json({reminder});
         }
         catch(err)
         {
@@ -30,7 +30,7 @@ export class ReminderController
         try
         {
             const reminder=await this.reminderService.updateReminder(parseInt(req.params.id),req.body,req.user);
-            res.status(200).json(reminder);
+            res.status(200).json({reminder});
         }
         catch(err)
         {
@@ -56,7 +56,7 @@ export class ReminderController
         try
         {
             const reminder=await this.reminderService.getReminder(parseInt(req.params.id),req.user);
-            res.status(200).json(reminder);
+            res.status(200).json({reminder});
         }
         catch(err)
         {
@@ -69,7 +69,7 @@ export class ReminderController
         try
         {
             const reminders=await this.reminderService.getAllOfUser(req.user.id);
-            res.status(200).json(reminders);
+            res.status(200).json({reminders});
         }
         catch(err)
         {

@@ -25,10 +25,10 @@ export class Reminder
     })
     status: string;
 
-    @ManyToOne(()=> User, user=> user.reminders)
+    @ManyToOne(()=> User, user=> user.reminders,{ onDelete: "CASCADE" })
     user: User;
 
-    @OneToMany(()=> Link, link=> link.reminder)
+    @OneToMany(()=> Link, link=> link.reminder,{ cascade: true, onDelete: "CASCADE" })
     links: Link[];
 
     @ManyToMany(()=> Tag, tag=> tag.reminders)

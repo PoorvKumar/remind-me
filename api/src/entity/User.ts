@@ -22,7 +22,7 @@ export class User
     @Column({ nullable: true })
     profilePicture: string;
 
-    @OneToMany(()=> Reminder, reminder=> reminder.user)
+    @OneToMany(()=> Reminder, reminder=> reminder.user, { cascade: true, onDelete: "CASCADE" })
     reminders: Reminder[];
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

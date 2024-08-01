@@ -6,6 +6,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/authRoutes";
 import reminderRouter from "./routes/reminderRoutes";
+import userRouter from "./routes/userRoutes";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.get('/',(req: Request, res: Response, next: NextFunction)=>
 
 app.use('/api/auth',authRouter);
 app.use('/api/reminder',reminderRouter);
+app.use('/api/user',userRouter);
 
 app.use((err: Error,req: Request,res: Response,next: NextFunction)=>
 {

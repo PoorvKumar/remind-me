@@ -10,6 +10,6 @@ export class Link
     @Column()
     url: string;
 
-    @ManyToOne(()=> Reminder, reminder=> reminder.links)
+    @ManyToOne(()=> Reminder, reminder=> reminder.links,{ onDelete: "CASCADE" })
     reminder: Reminder;
 }
