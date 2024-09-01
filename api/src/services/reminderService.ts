@@ -28,7 +28,8 @@ export class ReminderService extends WorkerService {
   async getAllOfUser(userId: number): Promise<Reminder[]> {
     return await this.reminderRepository.find({
       where: { user: { id: userId } },
-      relations: ["links","tags"]
+      relations: ["links","tags"],
+      order: { dueDate: "ASC" }
     });
   }
 
@@ -191,24 +192,27 @@ export class ReminderService extends WorkerService {
       throw new Error("Invalid delay calculated");
     }
     const jobId = `reminder-${reminder.id.toString()}`;
-    console.log("Scheduling reminder with ID:", jobId, "Type:", typeof jobId);
+    console.log("Scheduling reminder with ID:", jobId);
     await reminderQueue.add(
       "process-reminder",
       { reminderId: reminder.id },
       {
         jobId,
         delay: Math.max(delay, 0),
-        // removeOnComplete: true,
-        // removeOnFail: true
+        removeOnComplete: true,
+        removeOnFail: true
       }
     );
   }
 
   async processJobs(job: Job): Promise<void> {
     const { reminderId } = job.data;
-    const reminder = await this.reminderRepository.findOne({
+    const reminder = await this.reminderRepository.findOneOrFail({
       where: { id: reminderId },
+      relations: [ "user" ]
     });
+
+    console.log("Processing reminder:", reminder);
 
     if (reminder) {
       // send notification || push notification

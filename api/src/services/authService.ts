@@ -1,7 +1,7 @@
 import { getRepository, Repository } from "typeorm";
 import { User } from "../entity/User";
 import { compare, hash } from "bcryptjs";
-import { sign } from "jsonwebtoken";
+import { decode, sign, verify } from "jsonwebtoken";
 import axios from "axios";
 import { AppDataSource } from "../config/data-source";
 
@@ -51,6 +51,32 @@ export class AuthService {
     return { user, token };
   }
 
+  async verifyAndRefreshToken(
+    token: string
+  ): Promise<{ user: User; token?: string }> {
+    try {
+      const decoded: any = decode(token);
+      if (!decoded) throw new Error("Invalid token");
+
+      const payload: any = verify(token, process.env.JWT_SECRET!);
+      const user = await this.userRepository.findOneOrFail({
+        where: { id: payload.id },
+      });
+
+      if (!user) throw new Error("User not found");
+
+      const timeTillExpire = decoded.exp - Math.floor(Date.now() / 1000);
+      let newToken;
+      if (timeTillExpire < 5 * 60) {
+        newToken = this.generateToken(user);
+      }
+
+      return { user, token: newToken };
+    } catch (err) {
+      throw new Error("Invalid token");
+    }
+  }
+
   async getGoogleAuthUrl() {
     const url = "https://accounts.google.com/o/oauth2/v2/auth?";
     const params = new URLSearchParams({
@@ -59,7 +85,7 @@ export class AuthService {
       response_type: "code",
       scope: "email profile",
     });
-    
+
     return url + params.toString();
   }
 
@@ -89,7 +115,7 @@ export class AuthService {
 
     if (!user) {
       console.log(userInfo);
-      
+
       user = await this.userRepository.save({
         email: userInfo.email,
         firstName: userInfo.given_name,
@@ -98,8 +124,7 @@ export class AuthService {
         profilePicture: userInfo.picture,
       });
 
-      console.log("user",user);
-      
+      console.log("user", user);
     }
 
     const token = this.generateToken(user);
