@@ -29,18 +29,20 @@ const AddReminder: React.FC<AddReminderProps> = ({ onAddReminder }) => {
     }
   }, [date]);
 
-  // useEffect(() => {
-  //   if (includeUrl) {
-  //     chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+  useEffect(() => {
+    if (includeUrl) {
+      chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
 
-  //       setLink(tabs[0].url ?? '');
-  //       setTitle(tabs[0].title ?? '');
-  //     });
-  //   } else {
-  //     setLink('');
-  //     setTitle('');
-  //   }
-  // }, [includeUrl]);
+        setLink(tabs[0].url ?? '');
+        setTitle(tabs[0].title ?? '');
+        console.log(tabs[0].url);
+        
+      });
+    } else {
+      setLink('');
+      // setTitle('');
+    }
+  }, [includeUrl]);
 
   const handleQuickSet = (minutes: number) => {
     const now = new Date();

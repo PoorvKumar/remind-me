@@ -30,4 +30,10 @@ export class UserService
     {
         await this.userRepository.remove(user);
     }
+
+    async saveFCMToken(user: User, fcmToken: string): Promise<void>
+    {
+        user.fcmToken=fcmToken;
+        await this.userRepository.save(user);
+    }
 }

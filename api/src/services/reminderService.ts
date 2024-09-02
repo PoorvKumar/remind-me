@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { Reminder } from "../entity/Reminder";
 import { AppDataSource } from "../config/data-source";
 import { WorkerService } from "./workerService";
@@ -7,18 +7,21 @@ import { reminderQueue } from "../queues";
 import { Link } from "../entity/Link";
 import { Tag } from "../entity/Tag";
 import { User } from "../entity/User";
+import { NotificationService } from "./notificationService";
 // import { reminderQueue } from "../queues";
 
 export class ReminderService extends WorkerService {
   private reminderRepository: Repository<Reminder>;
   private linkRepository: Repository<Link>;
   private tagRepository: Repository<Tag>;
+  private notificationService: NotificationService;
 
   constructor() {
     super();
     this.reminderRepository = AppDataSource.getRepository(Reminder);
     this.linkRepository = AppDataSource.getRepository(Link);
     this.tagRepository = AppDataSource.getRepository(Tag);
+    this.notificationService=new NotificationService();
   }
 
   async getAll(): Promise<Reminder[]> {
@@ -28,6 +31,14 @@ export class ReminderService extends WorkerService {
   async getAllOfUser(userId: number): Promise<Reminder[]> {
     return await this.reminderRepository.find({
       where: { user: { id: userId } },
+      relations: ["links","tags"],
+      order: { dueDate: "ASC" }
+    });
+  }
+
+  async getRemainingOfUser(userId: number): Promise<Reminder[]> {
+    return await this.reminderRepository.find({
+      where: { user: { id: userId }, status: In([ "pending", "overdue" ]) },
       relations: ["links","tags"],
       order: { dueDate: "ASC" }
     });
@@ -146,11 +157,15 @@ export class ReminderService extends WorkerService {
           reminder.tags=tagEntities;
         }
 
-        console.log("Updated reminder with links and tags:",reminder);
+        // console.log("Updated reminder with links and tags:",reminder);
 
         await transactionalEntityManager.save(reminder);
-        await reminderQueue.remove(`reminder-${reminder.id}`);
-        await this.scheduleReminder(reminder);
+
+        if(dueDate)
+        {
+          await reminderQueue.remove(`reminder-${reminder.id}`);
+          await this.scheduleReminder(reminder);
+        }
 
         return reminder;
       }
@@ -212,12 +227,25 @@ export class ReminderService extends WorkerService {
       relations: [ "user" ]
     });
 
+    const user=reminder.user;
+    if (!user) {
+      console.log("User not found for reminder:", reminder);
+      return;
+    }
+
+    const fcmToken = user.fcmToken;
+    if(!fcmToken)
+    {
+      console.log("User has no FCM token:", user);
+      return;
+    }
+
     console.log("Processing reminder:", reminder);
 
     if (reminder) {
-      // send notification || push notification
-      console.log(`Processing reminder: ${reminder.id} | ${reminder.title}`);
-      reminder.status = "completed";
+      await this.notificationService.sendNotification(fcmToken, reminder);
+      
+      reminder.status = "overdue";
       await this.reminderRepository.save(reminder);
     }
   }

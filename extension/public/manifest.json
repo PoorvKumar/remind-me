@@ -10,11 +10,22 @@
     "128": "icons/icon128.png"
   },
   "permissions": [
+    "cookies",
     "notifications",
-    "background",
+    "tabs",
+    "activeTab",
     "storage"
+  ],
+  "host_permissions": [
+    "http://localhost:3000/"
   ],
   "action": {
     "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "firebase-messaging-sw.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
   }
 }

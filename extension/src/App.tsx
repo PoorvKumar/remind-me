@@ -6,11 +6,40 @@ import Auth from "./components/Auth";
 import UpcomingReminders from "./components/UpcomingReminders";
 import { Reminder, RemindersResponse } from "./types";
 import { FaRegUserCircle } from "react-icons/fa";
+import { messaging } from "./config/firebase";
+import { getToken, onMessage } from "firebase/messaging";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [reminders, setReminders] = useState<Reminder[]>([]);
+
+  // firebase setup
+  useEffect(()=>
+  {
+    const requestPermission = async () => {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        console.log('Notification permission granted.');
+        const token = await getToken(messaging, { vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY });
+        if (token) {
+          console.log('FCM Token:', token);
+          await api.post("/api/user/fcm-token",{ fcmToken: token });
+        } else {
+          console.log('No registration token available. Request permission to generate one.');
+        }
+      } else {
+        console.log('Unable to get permission to notify.');
+      }
+    };
+
+    requestPermission();
+
+    onMessage(messaging, (payload) => {
+      console.log('Message received. ', payload);
+    });
+
+  },[]);
 
   useEffect(() => {
     checkAuthStatus();
@@ -56,7 +85,7 @@ function App() {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-4 px-6 bg-white rounded-lg shadow-md">
+    <div className="mx-auto p-4 px-6 bg-white rounded-lg shadow-md custom-scrollbar">
       {isAuthenticated ? (
         <>
           <div className="flex justify-between items-center mb-4">
@@ -77,7 +106,7 @@ function App() {
             </div>
           </div>
           <AddReminder onAddReminder={fetchReminders} />
-          <UpcomingReminders reminders={reminders} onDeleteReminder={fetchReminders} />
+          <UpcomingReminders reminders={reminders} onChangeReminders={fetchReminders} />
         </>
       ) : (
         <Auth onAuthSuccess={checkAuthStatus} />

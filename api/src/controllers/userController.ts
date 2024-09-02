@@ -48,4 +48,17 @@ export class UserController
             next(err);
         }
     }
+
+    async saveFCMToken(req: Request, res: Response, next: NextFunction)
+    {
+        try
+        {
+            await this.userService.saveFCMToken(req.user,req.body.fcmToken);
+            return res.status(200).send("Success");
+        }
+        catch(err)
+        {
+            next(err);
+        }
+    }
 }

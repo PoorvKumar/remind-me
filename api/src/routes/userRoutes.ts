@@ -9,6 +9,7 @@ router.use(authenticateJWT);
 
 router.get('/',userController.getProfile.bind(userController));
 router.patch('/',userController.updateProfile.bind(userController));
-router.delete('/',userController.deleteAccount.bind(userController));
+router.delete('/',authenticateJWT,userController.deleteAccount.bind(userController));
+router.post('/fcm-token',authenticateJWT,userController.saveFCMToken.bind(userController));
 
 export default router;
