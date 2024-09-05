@@ -2,12 +2,12 @@ import { initializeApp } from "firebase/app";
 import { getMessaging } from "firebase/messaging";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBDy9dnG_86Tq6ryZMamI9gBqBitvT6eoc",
-  authDomain: "socialblog-399312.firebaseapp.com",
-  projectId: "socialblog-399312",
-  storageBucket: "socialblog-399312.appspot.com",
-  messagingSenderId: "697723929136",
-  appId: "1:697723929136:web:5e7336703b1b679969a3f5",
+  apiKey: import.meta.env.VITE_FB_API_KEY,
+  authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FB_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FB_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FB_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FB_APP_ID,
 };
 
 // Initialize Firebase
