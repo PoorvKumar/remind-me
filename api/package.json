@@ -4,9 +4,15 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node dist/index.js",
+    "start:pm2": "crossenv NODE_ENV=production pm2 start dist/index.js --name remind-me-api",
     "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
-    "test:performance": "ts-node tests/performance.ts"
+    "deploy": "npm run build && npm run start:pm2",
+    "test:performance": "ts-node tests/performance.ts",
+    "pm2:logs": "pm2 logs remind-me-api",
+    "pm2:stop": "pm2 stop remind-me-api",
+    "pm2:delete": "pm2 delete remind-me-api",
+    "pm2:restart": "pm2 restart remind-me-api"
   },
   "keywords": [],
   "author": "",
