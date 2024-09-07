@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node dist/index.js",
-    "start:pm2": "crossenv NODE_ENV=production pm2 start dist/index.js --name remind-me-api",
+    "start:pm2": "cross-env NODE_ENV=production pm2 start dist/index.js --name remind-me-api",
     "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
     "deploy": "npm run build && npm run start:pm2",
