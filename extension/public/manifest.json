@@ -13,11 +13,11 @@
     "cookies",
     "notifications",
     "tabs",
-    "activeTab",
-    "storage"
+    "activeTab"
   ],
   "host_permissions": [
-    "http://localhost:3000/"
+    "http://localhost:3000/",
+    "http://34.131.248.238"
   ],
   "action": {
     "default_popup": "index.html"
