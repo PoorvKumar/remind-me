@@ -3,6 +3,8 @@ import "reflect-metadata";
 import dotenv from "dotenv";
 dotenv.config();
 
+const isProduction=process.env.NODE_ENV==='production';
+
 export const AppDataSource=new DataSource({
     type: 'mysql',
     host: process.env.INSTANCE_HOST || 'localhost',
@@ -12,7 +14,7 @@ export const AppDataSource=new DataSource({
     database: process.env.DB_NAME || 'dev',
     synchronize: true,
     logging: false,
-    entities: ['src/entity/**/*.ts'],
+    entities: [ isProduction ? 'dist/entity/**/*.js' : 'src/entity/**/*.ts'],
     migrations: [],
     subscribers: []
 });
