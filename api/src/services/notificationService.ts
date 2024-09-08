@@ -10,6 +10,9 @@ export class NotificationService
                 title: reminder.title,
                 body: reminder.description
             },
+            data: {
+                reminderId: reminder.id.toString()
+            },
             token: fcmToken
         };
 

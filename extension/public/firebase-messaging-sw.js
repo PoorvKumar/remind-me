@@ -2,12 +2,12 @@ importScripts("./firebase-app-compact.js");
 importScripts("./firebase-messaging-compact.js");
 
 const firebaseConfig = {
-  apiKey: import.meta.VITE_FB_API_KEY,
-  authDomain: import.meta.VITE_FB_AUTH_DOMAIN,
-  projectId: import.meta.VITE_FB_PROJECT_ID,
-  storageBucket: import.meta.VITE_FB_STORAGE_BUCKET,
-  messagingSenderId: import.meta.VITE_FB_MESSAGING_SENDER_ID,
-  appId: import.meta.VITE_FB_APP_ID,
+  apiKey: "AIzaSyBDy9dnG_86Tq6ryZMamI9gBqBitvT6eoc",
+  authDomain: "socialblog-399312.firebaseapp.com",
+  projectId: "socialblog-399312",
+  storageBucket: "socialblog-399312.appspot.com",
+  messagingSenderId: "697723929136",
+  appId: "1:697723929136:web:5e7336703b1b679969a3f5",
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -27,6 +27,9 @@ messaging.onBackgroundMessage(function (payload) {
       { action: "mark-as-done", title: "Mark as Done" },
       { action: "dismiss", title: "Dismiss" },
     ],
+    data: {
+      reminderId: payload.data.reminderId
+    }
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
@@ -34,11 +37,16 @@ messaging.onBackgroundMessage(function (payload) {
 
 self.addEventListener("notificationclick", function (event) {
   const action = event.action;
-  // console.log(action);
+  const reminderId=event.notification.data.reminderId;
+  console.log("Action clicked: ", action);
+  console.log("Reminder Id: ", event.notification.data.reminderId);
+  
+  // const backendUrl="http://localhost:3000/api/reminders";
+  const backendUrl="http://34.131.248.238/api/reminders";
+  
   
   if (action === "mark-as-done") {
-    // Make API call to mark as done
-    fetch(`http://localhost:3000/api/reminders/${action}`, {
+    fetch(`${backendUrl}/api/reminders/${reminderId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
