@@ -8,6 +8,7 @@ import { Reminder, RemindersResponse } from "./types";
 import { FaRegUserCircle } from "react-icons/fa";
 import { messaging } from "./config/firebase";
 import { getToken, onMessage } from "firebase/messaging";
+import Footer from "./components/Footer";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -107,6 +108,7 @@ function App() {
           </div>
           <AddReminder onAddReminder={fetchReminders} />
           <UpcomingReminders reminders={reminders} onChangeReminders={fetchReminders} />
+          <Footer />
         </>
       ) : (
         <Auth onAuthSuccess={checkAuthStatus} />

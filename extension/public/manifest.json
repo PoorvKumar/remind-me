@@ -12,8 +12,7 @@
   "permissions": [
     "cookies",
     "notifications",
-    "tabs",
-    "activeTab"
+    "tabs"
   ],
   "host_permissions": [
     "http://localhost:3000/",

@@ -13,7 +13,7 @@ export interface Reminder {
   title: string;
   description: string;
   dueDate: string;
-  status: "completed" | "pending";
+  status: "completed" | "pending" | "overdue";
   recurrence: string | null;
   links: Link[];
   tags: Tag[];

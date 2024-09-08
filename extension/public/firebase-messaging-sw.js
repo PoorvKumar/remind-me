@@ -41,12 +41,12 @@ self.addEventListener("notificationclick", function (event) {
   console.log("Action clicked: ", action);
   console.log("Reminder Id: ", event.notification.data.reminderId);
   
-  // const backendUrl="http://localhost:3000/api/reminders";
-  const backendUrl="http://34.131.248.238/api/reminders";
+  // const backendUrl="http://localhost:3000/api/reminder";
+  const backendUrl="http://34.131.248.238/api/reminder";
   
   
   if (action === "mark-as-done") {
-    fetch(`${backendUrl}/api/reminders/${reminderId}`, {
+    fetch(`${backendUrl}/${reminderId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
