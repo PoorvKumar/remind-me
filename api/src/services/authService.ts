@@ -52,7 +52,7 @@ export class AuthService {
   }
 
   async verifyAndRefreshToken(
-    token: string
+    token: string,
   ): Promise<{ user: User; token?: string }> {
     try {
       const decoded: any = decode(token);
@@ -103,7 +103,7 @@ export class AuthService {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     const { access_token } = tokenResponse.data;
@@ -138,7 +138,7 @@ export class AuthService {
         headers: {
           Authorization: `Bearer ${access_token}`,
         },
-      }
+      },
     );
 
     return response.data;

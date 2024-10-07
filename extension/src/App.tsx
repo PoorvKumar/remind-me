@@ -16,31 +16,33 @@ function App() {
   const [reminders, setReminders] = useState<Reminder[]>([]);
 
   // firebase setup
-  useEffect(()=>
-  {
+  useEffect(() => {
     const requestPermission = async () => {
       const permission = await Notification.requestPermission();
-      if (permission === 'granted') {
-        console.log('Notification permission granted.');
-        const token = await getToken(messaging, { vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY });
+      if (permission === "granted") {
+        console.log("Notification permission granted.");
+        const token = await getToken(messaging, {
+          vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+        });
         if (token) {
-          console.log('FCM Token:', token);
-          await api.post("/api/user/fcm-token",{ fcmToken: token });
+          console.log("FCM Token:", token);
+          await api.post("/api/user/fcm-token", { fcmToken: token });
         } else {
-          console.log('No registration token available. Request permission to generate one.');
+          console.log(
+            "No registration token available. Request permission to generate one.",
+          );
         }
       } else {
-        console.log('Unable to get permission to notify.');
+        console.log("Unable to get permission to notify.");
       }
     };
 
     requestPermission();
 
     onMessage(messaging, (payload) => {
-      console.log('Message received. ', payload);
+      console.log("Message received. ", payload);
     });
-
-  },[]);
+  }, []);
 
   useEffect(() => {
     checkAuthStatus();
@@ -50,8 +52,7 @@ function App() {
   const checkAuthStatus = async () => {
     try {
       const response = await api.get("/api/auth/check-auth");
-      if(response.status === 200)
-      {
+      if (response.status === 200) {
         setIsAuthenticated(true);
         fetchReminders();
       }
@@ -64,10 +65,10 @@ function App() {
 
   const fetchReminders = async (): Promise<void> => {
     try {
-      const response = await api.get<RemindersResponse>('/api/reminder');
+      const response = await api.get<RemindersResponse>("/api/reminder");
       setReminders(response.data.reminders);
     } catch (error) {
-      console.error('Error fetching reminders:', error);
+      console.error("Error fetching reminders:", error);
     }
   };
 
@@ -76,13 +77,12 @@ function App() {
       await api.post("/api/auth/logout");
       setIsAuthenticated(false);
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.error("Error logging out:", error);
     }
   };
 
-  if(isLoading)
-  {
-    return <div className="text-center mt-8">Loading...</div>
+  if (isLoading) {
+    return <div className="text-center mt-8">Loading...</div>;
   }
 
   return (
@@ -107,7 +107,10 @@ function App() {
             </div>
           </div>
           <AddReminder onAddReminder={fetchReminders} />
-          <UpcomingReminders reminders={reminders} onChangeReminders={fetchReminders} />
+          <UpcomingReminders
+            reminders={reminders}
+            onChangeReminders={fetchReminders}
+          />
           <Footer />
         </>
       ) : (

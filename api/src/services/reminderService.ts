@@ -21,7 +21,7 @@ export class ReminderService extends WorkerService {
     this.reminderRepository = AppDataSource.getRepository(Reminder);
     this.linkRepository = AppDataSource.getRepository(Link);
     this.tagRepository = AppDataSource.getRepository(Tag);
-    this.notificationService=new NotificationService();
+    this.notificationService = new NotificationService();
   }
 
   async getAll(): Promise<Reminder[]> {
@@ -31,29 +31,29 @@ export class ReminderService extends WorkerService {
   async getAllOfUser(userId: number): Promise<Reminder[]> {
     return await this.reminderRepository.find({
       where: { user: { id: userId } },
-      relations: ["links","tags"],
-      order: { dueDate: "ASC" }
+      relations: ["links", "tags"],
+      order: { dueDate: "ASC" },
     });
   }
 
   async getRemainingOfUser(userId: number): Promise<Reminder[]> {
     return await this.reminderRepository.find({
-      where: { user: { id: userId }, status: In([ "pending", "overdue" ]) },
-      relations: ["links","tags"],
-      order: { dueDate: "ASC" }
+      where: { user: { id: userId }, status: In(["pending", "overdue"]) },
+      relations: ["links", "tags"],
+      order: { dueDate: "ASC" },
     });
   }
 
   async getReminder(id: number, user: User): Promise<Reminder> {
     return await this.reminderRepository.findOneOrFail({
       where: { id, user: { id: user.id } },
-      relations: ["links","tags"]
+      relations: ["links", "tags"],
     });
   }
 
   async createReminder(
     reminderData: Partial<Reminder>,
-    user: User
+    user: User,
   ): Promise<Reminder> {
     // console.log("Creating reminder with data:", reminderData);
     return await AppDataSource.manager.transaction(
@@ -71,7 +71,7 @@ export class ReminderService extends WorkerService {
 
         if (links) {
           const newLinks = links.map((link) =>
-            this.linkRepository.create({ ...link, reminder })
+            this.linkRepository.create({ ...link, reminder }),
           );
           await transactionalEntityManager.save(newLinks);
           reminder.links = newLinks;
@@ -90,7 +90,7 @@ export class ReminderService extends WorkerService {
                 await transactionalEntityManager.save(tag);
               }
               return tag;
-            })
+            }),
           );
           reminder.tags = tagEntities;
         }
@@ -100,14 +100,14 @@ export class ReminderService extends WorkerService {
         await transactionalEntityManager.save(reminder);
         await this.scheduleReminder(reminder);
         return reminder;
-      }
+      },
     );
   }
 
   async updateReminder(
     id: number,
     reminderData: Partial<Reminder>,
-    user: User
+    user: User,
   ): Promise<Reminder> {
     return await AppDataSource.manager.transaction(
       async (transactionalEntityManager) => {
@@ -116,29 +116,29 @@ export class ReminderService extends WorkerService {
           relations: ["links", "tags"],
         });
 
-        if(!reminder) throw new Error("Reminder not found or unauthorized!");
+        if (!reminder) throw new Error("Reminder not found or unauthorized!");
 
-        const { title, description, status, dueDate, recurrence, links, tags }=reminderData;
+        const { title, description, status, dueDate, recurrence, links, tags } =
+          reminderData;
 
-        if(title) reminder.title=title;
-        if(description) reminder.description=description;
-        if(dueDate) reminder.dueDate=dueDate;
-        if(status) reminder.status=status;
-        if(recurrence) reminder.recurrence=recurrence;
+        if (title) reminder.title = title;
+        if (description) reminder.description = description;
+        if (dueDate) reminder.dueDate = dueDate;
+        if (status) reminder.status = status;
+        if (recurrence) reminder.recurrence = recurrence;
 
-        console.log("Updated reminder w/o links and tags:",reminder);
+        console.log("Updated reminder w/o links and tags:", reminder);
 
         if (links) {
           await transactionalEntityManager.remove(reminder.links);
           const newLinks = links.map((link) =>
-            this.linkRepository.create({ ...link, reminder })
+            this.linkRepository.create({ ...link, reminder }),
           );
-          reminder.links=await transactionalEntityManager.save(newLinks);
+          reminder.links = await transactionalEntityManager.save(newLinks);
         }
 
         if (tags) {
-
-          reminder.tags=[];
+          reminder.tags = [];
           await transactionalEntityManager.save(reminder);
 
           const tagEntities = await Promise.all(
@@ -151,48 +151,46 @@ export class ReminderService extends WorkerService {
                 await transactionalEntityManager.save(tag);
               }
               return tag;
-            })
+            }),
           );
 
-          reminder.tags=tagEntities;
+          reminder.tags = tagEntities;
         }
 
         // console.log("Updated reminder with links and tags:",reminder);
 
         await transactionalEntityManager.save(reminder);
 
-        if(dueDate)
-        {
+        if (dueDate) {
           await reminderQueue.remove(`reminder-${reminder.id}`);
           await this.scheduleReminder(reminder);
         }
 
         return reminder;
-      }
+      },
     );
   }
 
-  async deleteReminder(id: number,user: User): Promise<void> {
+  async deleteReminder(id: number, user: User): Promise<void> {
     await AppDataSource.manager.transaction(
       async (transactionalEntityManager) => {
         const reminder = await this.reminderRepository.findOne({
           where: { id },
-          relations: ["links","tags","user"],
+          relations: ["links", "tags", "user"],
         });
 
-        if(!reminder) throw new Error("Reminder not found or unauthorized!");
+        if (!reminder) throw new Error("Reminder not found or unauthorized!");
 
-        if(reminder.links && reminder.links.length>0)
-        {
+        if (reminder.links && reminder.links.length > 0) {
           await transactionalEntityManager.remove(reminder.links);
         }
 
-        reminder.tags=[];
+        reminder.tags = [];
         await transactionalEntityManager.save(reminder);
 
         await reminderQueue.remove(`reminder-${reminder.id}`);
         await transactionalEntityManager.remove(reminder);
-      }
+      },
     );
   }
 
@@ -215,8 +213,8 @@ export class ReminderService extends WorkerService {
         jobId,
         delay: Math.max(delay, 0),
         removeOnComplete: true,
-        removeOnFail: true
-      }
+        removeOnFail: true,
+      },
     );
   }
 
@@ -224,18 +222,17 @@ export class ReminderService extends WorkerService {
     const { reminderId } = job.data;
     const reminder = await this.reminderRepository.findOneOrFail({
       where: { id: reminderId },
-      relations: [ "user" ]
+      relations: ["user"],
     });
 
-    const user=reminder.user;
+    const user = reminder.user;
     if (!user) {
       console.log("User not found for reminder:", reminder);
       return;
     }
 
     const fcmToken = user.fcmToken;
-    if(!fcmToken)
-    {
+    if (!fcmToken) {
       console.log("User has no FCM token:", user);
       return;
     }
@@ -244,7 +241,7 @@ export class ReminderService extends WorkerService {
 
     if (reminder) {
       await this.notificationService.sendNotification(fcmToken, reminder);
-      
+
       reminder.status = "overdue";
       await this.reminderRepository.save(reminder);
     }

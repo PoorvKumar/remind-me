@@ -31,15 +31,13 @@ const AddReminder: React.FC<AddReminderProps> = ({ onAddReminder }) => {
 
   useEffect(() => {
     if (includeUrl) {
-      chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-
-        setLink(tabs[0].url ?? '');
-        setTitle(tabs[0].title ?? '');
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        setLink(tabs[0].url ?? "");
+        setTitle(tabs[0].title ?? "");
         console.log(tabs[0].url);
-        
       });
     } else {
-      setLink('');
+      setLink("");
       // setTitle('');
     }
   }, [includeUrl]);
@@ -56,6 +54,14 @@ const AddReminder: React.FC<AddReminderProps> = ({ onAddReminder }) => {
     setIsLoading(true);
     setError("");
     setSuccess("");
+
+    const now = new Date();
+    const selectedDate = new Date(`${date}T${time}:00`);
+    if (selectedDate < now) {
+      setError("❌ Please select a future date and time.");
+      setIsLoading(false);
+      return;
+    }
 
     const reminderData = {
       title,
@@ -100,7 +106,10 @@ const AddReminder: React.FC<AddReminderProps> = ({ onAddReminder }) => {
           className={`mb-2 p-3 rounded-md cursor-pointer ${
             success ? "bg-yellow-100" : "bg-red-100"
           }`}
-          onClick={()=> { setSuccess(""); setError(""); }}
+          onClick={() => {
+            setSuccess("");
+            setError("");
+          }}
         >
           {success ? (
             <div className="flex items-center justify-center">
@@ -209,7 +218,6 @@ const AddReminder: React.FC<AddReminderProps> = ({ onAddReminder }) => {
             id="when"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            min={new Date().toISOString().split("T")[0]}
             className="w-full px-3 py-2 border border-gray-300 rounded-md"
             required
           />
@@ -226,7 +234,6 @@ const AddReminder: React.FC<AddReminderProps> = ({ onAddReminder }) => {
             id="at"
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            min={minTime}
             className="w-full px-3 py-2 border border-gray-300 rounded-md"
             required
           />

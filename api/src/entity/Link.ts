@@ -2,14 +2,15 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Reminder } from "./Reminder";
 
 @Entity()
-export class Link
-{
-    @PrimaryGeneratedColumn()
-    id: number;
+export class Link {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    url: string;
+  @Column()
+  url: string;
 
-    @ManyToOne(()=> Reminder, reminder=> reminder.links,{ onDelete: "CASCADE" })
-    reminder: Reminder;
+  @ManyToOne(() => Reminder, (reminder) => reminder.links, {
+    onDelete: "CASCADE",
+  })
+  reminder: Reminder;
 }

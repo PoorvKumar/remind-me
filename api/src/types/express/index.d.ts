@@ -1,10 +1,10 @@
-import * as express from "express"
+import * as express from "express";
 import { User } from "../../entity/User";
 
 declare global {
-    namespace Express {
-        interface Request {
-            user? : User
-        }
+  namespace Express {
+    interface Request {
+      user?: User;
     }
+  }
 }

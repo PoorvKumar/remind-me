@@ -10,29 +10,29 @@ import userRouter from "./routes/userRoutes";
 
 dotenv.config();
 
-const app=express();
-app.use(cors({
-    origin: [ process.env.EXTENSION_URL, process.env.FRONTEND_URL ],
-    credentials: true
-}));
+const app = express();
+app.use(
+  cors({
+    origin: [process.env.EXTENSION_URL, process.env.FRONTEND_URL],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
 app.use(morgan("dev"));
 
-app.get('/',(req: Request, res: Response, next: NextFunction)=>
-{
-    return res.json({ message: "API running!" });
+app.get("/", (req: Request, res: Response, next: NextFunction) => {
+  return res.json({ message: "API running!" });
 });
 
-app.use('/api/auth',authRouter);
-app.use('/api/reminder',reminderRouter);
-app.use('/api/user',userRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/reminder", reminderRouter);
+app.use("/api/user", userRouter);
 
-app.use((err: Error,req: Request,res: Response,next: NextFunction)=>
-{
-    console.error(err.stack);
-    res.status(500).send("Something Broke!");
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res.status(500).send("Something Broke!");
 });
 
 export default app;

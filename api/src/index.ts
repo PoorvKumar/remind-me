@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000;
 async function startServer() {
   try {
     await connectDatabase();
-    await setupWorkers([ reminderWorkerConfig ]);
+    await setupWorkers([reminderWorkerConfig]);
 
     app.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);

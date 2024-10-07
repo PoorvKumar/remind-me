@@ -1,6 +1,6 @@
-import { FormEvent, useState } from 'react';
-import api from '../config/api';
-import axios from 'axios';
+import { FormEvent, useState } from "react";
+import api from "../config/api";
+import axios from "axios";
 
 interface AuthProps {
   onAuthSuccess: () => void;
@@ -8,18 +8,18 @@ interface AuthProps {
 
 const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     try {
-      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+      const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
       const payload = isLogin
         ? { email, password }
         : { firstName, lastName, email, password };
@@ -28,15 +28,14 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
 
       if (response.status === 200) {
         onAuthSuccess();
-      }
-      else if (response.status === 201) {
+      } else if (response.status === 201) {
         setIsLogin(true);
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data.message || 'An error occurred');
+        setError(err.response?.data.message || "An error occurred");
       } else {
-        setError('An unexpected error occurred');
+        setError("An unexpected error occurred");
       }
     }
   };
@@ -44,13 +43,16 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-6 text-center">
-        {isLogin ? 'Login' : 'Sign Up'}
+        {isLogin ? "Login" : "Sign Up"}
       </h2>
       <form onSubmit={handleSubmit}>
         {!isLogin && (
           <>
             <div className="mb-4">
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="firstName"
+                className="block text-sm font-medium text-gray-700"
+              >
                 First Name
               </label>
               <input
@@ -63,7 +65,10 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="lastName"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Last Name
               </label>
               <input
@@ -78,7 +83,10 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
           </>
         )}
         <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
             Email
           </label>
           <input
@@ -91,7 +99,10 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
             Password
           </label>
           <input
@@ -108,7 +119,7 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
           type="submit"
           className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
         >
-          {isLogin ? 'Login' : 'Sign Up'}
+          {isLogin ? "Login" : "Sign Up"}
         </button>
         <p className="mt-4 text-center">
           {isLogin ? "Don't have an account? " : "Already have an account? "}
@@ -117,7 +128,7 @@ const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
             onClick={() => setIsLogin(!isLogin)}
             className="text-blue-500 hover:underline"
           >
-            {isLogin ? 'Sign Up' : 'Login'}
+            {isLogin ? "Sign Up" : "Login"}
           </button>
         </p>
       </form>

@@ -49,10 +49,10 @@ async function testQueuePerformance() {
   const averageRatePerDay = averageRatePerMinute * 60 * 24;
 
   console.log(
-    `Average rate: ${averageRatePerSecond.toFixed(2)} reminders/second`
+    `Average rate: ${averageRatePerSecond.toFixed(2)} reminders/second`,
   );
   console.log(
-    `Average rate: ${averageRatePerMinute.toFixed(2)} reminders/minute`
+    `Average rate: ${averageRatePerMinute.toFixed(2)} reminders/minute`,
   );
   console.log(`Average rate: ${averageRatePerDay.toFixed(2)} reminders/day`);
 }

@@ -50,16 +50,15 @@ export class AuthController {
     }
   }
 
-  public async logout(req: Request, res: Response, next: NextFunction)
-  {
-    res.clearCookie('token');
+  public async logout(req: Request, res: Response, next: NextFunction) {
+    res.clearCookie("token");
     return res.sendStatus(200);
   }
 
   public async integrateGoogle(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     const url = await this.authService.getGoogleAuthUrl();
     return res.status(200).json({ url });
@@ -69,15 +68,15 @@ export class AuthController {
     try {
       const { code } = req.query;
       const { user, token } = await this.authService.googleCallback(
-        code as string
+        code as string,
       );
       this.setTokenCookie(res, token);
       return res.redirect(`${process.env.FRONTEND_URL}/auth-success`);
     } catch (err) {
       res.redirect(
         `${process.env.FRONTEND_URL}/auth-failure?error=${encodeURIComponent(
-          err.message
-        )}`
+          err.message,
+        )}`,
       );
     }
   }
@@ -86,7 +85,7 @@ export class AuthController {
     res.cookie("token", token, {
       httpOnly: true,
       // secure: process.env.NODE_ENV === "production",
-      sameSite: 'strict',
+      sameSite: "strict",
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
   }

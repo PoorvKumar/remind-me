@@ -9,15 +9,8 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": [
-    "cookies",
-    "notifications",
-    "tabs"
-  ],
-  "host_permissions": [
-    "http://localhost:3000/",
-    "*://34.131.248.238/*"
-  ],
+  "permissions": ["cookies", "notifications", "tabs"],
+  "host_permissions": ["http://remindme.poorvkumar.me/"],
   "action": {
     "default_popup": "index.html"
   },

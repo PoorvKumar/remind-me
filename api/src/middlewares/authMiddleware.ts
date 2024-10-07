@@ -6,7 +6,7 @@ import { User } from "../entity/User";
 export function authenticateJWT(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const token = req.cookies.token;
 

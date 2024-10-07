@@ -2,14 +2,13 @@ import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Reminder } from "./Reminder";
 
 @Entity()
-export class Tag
-{
-    @PrimaryGeneratedColumn()
-    id: number;
+export class Tag {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    name: string;
+  @Column()
+  name: string;
 
-    @ManyToMany(()=> Reminder, reminder=>reminder.tags)
-    reminders: Reminder[];
+  @ManyToMany(() => Reminder, (reminder) => reminder.tags)
+  reminders: Reminder[];
 }

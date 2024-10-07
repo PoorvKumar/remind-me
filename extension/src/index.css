@@ -4,24 +4,24 @@
 
 body,
 html {
-    width: 475px;
-    margin: 0;
-    padding: 0;
-    scrollbar-width: none;
+  width: 475px;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: none;
 }
 
 #root {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .custom-scrollbar {
-    -ms-overflow-style: none;
-    /* IE and Edge */
-    scrollbar-width: none;
-    /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
